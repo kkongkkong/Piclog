@@ -40,7 +40,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<NukkiResu
     }
 
     // Replicate API를 통해 배경 제거
-    // 사용 모델: rembg (background removal)
+    // 사용 모델: fottoai/remove-bg-2
     const replicateResponse = await fetch('https://api.replicate.com/v1/predictions', {
       method: 'POST',
       headers: {
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<NukkiResu
         'Authorization': `Token ${replicateToken}`,
       },
       body: JSON.stringify({
-        version: 'fb7a6f6673ecf2e2b9231e3b6b134fb6920357bcc43a36416e8088490268be378', // rembg model
+        version: 'd748bcc6882e5567ffe1468356323e6345736494dd9b827ff2871a68fca79be5',
         input: {
           image: imageUrl,
         },
