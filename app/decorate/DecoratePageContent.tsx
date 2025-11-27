@@ -40,7 +40,13 @@ export default function DecoratePageContent() {
           .single();
 
         if (supabaseError) {
-          throw new Error(supabaseError.message);
+          console.error('Supabase 쿼리 에러:', {
+            code: supabaseError.code,
+            message: supabaseError.message,
+            status: (supabaseError as any).status,
+            details: (supabaseError as any).details,
+          });
+          throw new Error(`사진 로드 실패: ${supabaseError.message}`);
         }
 
         if (!photoData) {
@@ -58,6 +64,7 @@ export default function DecoratePageContent() {
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : '사진 로드 실패';
         setError(errorMsg);
+        console.error('사진 로드 중 오류:', errorMsg);
       } finally {
         setLoading(false);
       }

@@ -24,12 +24,24 @@ export async function GET(request: NextRequest) {
     }
 
     // Supabase에서 해당 날짜의 사진 조회
+    console.log('Supabase 쿼리 시작:', {
+      table: PHOTOS_TABLE,
+      date,
+      url: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    });
+
     const { data: photos, error: photosError } = await supabase
       .from(PHOTOS_TABLE)
       .select('*')
       .gte('created_at', `${date}T00:00:00Z`)
       .lt('created_at', `${date}T23:59:59Z`)
       .order('created_at', { ascending: true });
+
+    console.log('Supabase 쿼리 결과:', {
+      count: photos?.length || 0,
+      photos: photos?.map(p => ({ id: p.id, url: p.url })) || [],
+      error: photosError,
+    });
 
     if (photosError) {
       console.error('Supabase 사진 쿼리 오류:', photosError);
