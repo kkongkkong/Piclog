@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase, PHOTOS_TABLE, PHOTOS_BUCKET } from '@/lib/supabase';
+import { supabase, PHOTOS_TABLE, PHOTOS_BUCKET, PHOTO_POSITIONS_TABLE, DECORATIONS_TABLE } from '@/lib/supabase';
+
+export const dynamic = 'force-dynamic';
 
 /**
  * DELETE /api/photos/delete
  * 사진을 삭제합니다 (DB와 Storage에서 모두 삭제)
+ * 관련 데이터도 함께 삭제:
+ * - photo_positions (사진 위치)
+ * - decorations (장식)
  */
 export async function DELETE(request: NextRequest) {
   try {
@@ -33,22 +38,46 @@ export async function DELETE(request: NextRequest) {
       }
     }
 
-    // DB에서 레코드 삭제
+    // 관련 데이터 삭제 (순서 중요: 외래키 관계 때문에)
+    // 1. 사진 위치 정보 삭제
+    const { error: posError } = await supabase
+      .from(PHOTO_POSITIONS_TABLE)
+      .delete()
+      .eq('photo_id', photoId);
+
+    if (posError) {
+      console.error('위치 정보 삭제 오류 (계속 진행):', posError);
+      // 계속 진행
+    }
+
+    // 2. 장식 정보 삭제
+    const { error: decorError } = await supabase
+      .from(DECORATIONS_TABLE)
+      .delete()
+      .eq('photo_id', photoId);
+
+    if (decorError) {
+      console.error('장식 정보 삭제 오류 (계속 진행):', decorError);
+      // 계속 진행
+    }
+
+    // 3. 사진 자체 삭제
     const { error: dbError } = await supabase
       .from(PHOTOS_TABLE)
       .delete()
       .eq('id', photoId);
 
     if (dbError) {
-      console.error('DB 삭제 오류:', dbError);
+      console.error('사진 삭제 오류:', dbError);
       throw dbError;
     }
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, message: '사진이 삭제되었습니다' });
   } catch (error) {
     console.error('사진 삭제 오류:', error);
+    const errorMsg = error instanceof Error ? error.message : '알 수 없는 오류';
     return NextResponse.json(
-      { error: '사진 삭제 실패' },
+      { error: `사진 삭제 실패: ${errorMsg}` },
       { status: 500 }
     );
   }
