@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, PHOTO_POSITIONS_TABLE } from '@/lib/supabase';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/photos/positions/get?photoId=xxx&time=09:00
  * 저장된 사진 위치와 크기를 조회합니다.

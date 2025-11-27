@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, TEXT_ITEMS_TABLE } from '@/lib/supabase';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/text-items?timeBlockTime=09:00
  * 특정 시간대(TimelineSection)의 텍스트 항목들을 조회합니다.

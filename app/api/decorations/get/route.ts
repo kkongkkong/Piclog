@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase, DECORATIONS_TABLE } from '@/lib/supabase';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/decorations/get?photoId=XXX
  * 특정 사진의 데코레이션을 조회합니다.

@@ -3,6 +3,8 @@ import { supabase, PHOTOS_TABLE, DECORATIONS_TABLE } from '@/lib/supabase';
 import { TimelineData } from '@/types';
 import { getHourFromTimestamp, isSameDay, formatTimelineDate } from '@/lib/dates';
 
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/timeline?date=YYYY-MM-DD
  * 특정 날짜의 타임라인 데이터를 조회합니다.

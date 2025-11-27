@@ -1,14 +1,15 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import '@/globals.css';
 
 export const metadata: Metadata = {
   title: 'Piclog - 무노력 자동 기록 서비스',
   description: '사진만 찍어도 하루 기록이 자동으로 완성되는 타임라인 서비스',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-  },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
