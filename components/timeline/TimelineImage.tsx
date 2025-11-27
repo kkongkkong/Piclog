@@ -255,8 +255,8 @@ export function TimelineImage({
           className="h-auto object-contain"
           style={{
             width: width ? '100%' : 'auto',
-            maxWidth: width ? 'none' : '200px',
-            maxHeight: width ? '600px' : '48px',
+            maxWidth: width ? 'none' : '320px',
+            maxHeight: width ? '600px' : '280px',
           }}
         />
       </div>
