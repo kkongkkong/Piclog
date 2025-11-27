@@ -34,19 +34,114 @@ button {
 
 /* === TIMELINE STYLES === */
 .timeline-container {
-  @apply w-full max-w-4xl mx-auto px-4 py-8;
+  @apply w-full mx-auto px-4;
+  max-width: 1200px;
+  padding-top: 100px;
+  padding-bottom: 120px;
 }
 
+/* TimelineColumn: 전체 타임라인 컨테이너 */
 .timeline-column {
-  @apply flex flex-col gap-6;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
-.time-block {
-  @apply flex flex-col gap-3 pb-6 border-l-2 border-gray-200 pl-6 relative;
+/* TimelineSection: 시간대별 독립 컨테이너 with [time | line | photos] flex row 구조 */
+.timeline-section-row {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  gap: 0;
 }
 
-.time-label {
-  @apply text-sm font-semibold text-gray-600 sticky top-0 z-10;
+@media (max-width: 768px) {
+  .timeline-section-row {
+    /* 모바일에서도 같은 구조 유지 */
+  }
+}
+
+/* 왼쪽: 시간 라벨 (각 섹션마다 독립적) */
+.timeline-section-time {
+  @apply text-sm font-semibold text-gray-600 text-right pr-3;
+  flex: 0 0 60px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  display: flex;
+  align-items: flex-start;
+}
+
+@media (max-width: 768px) {
+  .timeline-section-time {
+    flex: 0 0 45px;
+  }
+}
+
+@media (max-width: 480px) {
+  .timeline-section-time {
+    flex: 0 0 40px;
+    font-size: 11px;
+  }
+}
+
+/* 중앙: 해당 섹션만의 노란 선 (높이는 섹션 콘텐츠에 자동으로 맞춰짐) */
+.timeline-section-line {
+  background-color: #F5D046;
+  width: 4px;
+  border-radius: 2px;
+  min-height: 100%;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .timeline-section-line {
+    width: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .timeline-section-line {
+    width: 2px;
+  }
+}
+
+/* TimelineSection: 시간대별 독립 컨테이너 (레거시) */
+.timeline-section {
+  @apply px-4 py-2;
+  display: block;
+  position: relative;
+  width: 100%;
+}
+
+/* 오른쪽: 사진들 컨테이너 (같은 시간대, 각 섹션의 오른쪽 영역) */
+.timeline-photos-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: flex-start;
+  flex: 1;
+  padding-left: 16px;
+}
+
+/* TimelineImage: position: relative + display: block + margin-top */
+.timeline-image {
+  position: relative;
+  display: block;
+  margin-top: 0;
+  margin-left: 0;
+  width: auto;
+}
+
+/* TimelineImage 드래그 가능 상태 */
+.timeline-image-draggable img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* TimelineImage 드래그 중 상태 */
+.timeline-image-dragging {
+  user-select: none;
+  pointer-events: auto;
 }
 
 .photo-card {
