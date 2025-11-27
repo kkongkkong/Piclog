@@ -3,13 +3,13 @@ import { supabase, PHOTO_POSITIONS_TABLE } from '@/lib/supabase';
 
 /**
  * GET /api/photos/positions/get?photoId=xxx&time=09:00
- * 저장된 사진 위치를 조회합니다.
+ * 저장된 사진 위치와 크기를 조회합니다.
  *
  * Query params:
  *   photoId: string
  *   time: string (timeBlockTime, e.g., "09:00")
  *
- * Response: { x: number, y: number } or null
+ * Response: { x: number, y: number, width?: number } or null
  */
 export async function GET(request: NextRequest) {
   try {
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     // 저장된 위치 조회
     const { data, error } = await supabase
       .from(PHOTO_POSITIONS_TABLE)
-      .select('x, y')
+      .select('x, y, width')
       .eq('photo_id', photoId)
       .eq('time_block', timeBlockTime)
       .single();

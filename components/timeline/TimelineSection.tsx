@@ -10,6 +10,7 @@ interface TimelineSectionProps {
   onRemoveComplete?: () => void;
   onDecorate?: (photoId: string) => void;
   onPhotoPositionChange?: (photoId: string, x: number, y: number) => Promise<void>;
+  onPhotoResizeEnd?: (photoId: string, width: number, timeBlockTime: string, x: number, y: number) => Promise<void>;
   selectedPhotos?: Set<string>;
   deleting?: boolean;
 }
@@ -28,6 +29,7 @@ export function TimelineSection({
   onRemoveComplete,
   onDecorate,
   onPhotoPositionChange,
+  onPhotoResizeEnd,
   selectedPhotos = new Set(),
   deleting = false,
 }: TimelineSectionProps) {
@@ -41,7 +43,10 @@ export function TimelineSection({
       {/* 중앙: 해당 섹션 노란 선 (height는 콘텐츠 높이에 자동으로 맞춰짐) */}
       <div className="timeline-section-line" />
 
-      {/* 오른쪽: 같은 시간대의 사진들 (드래그 가능, 범위 제한) */}
+      {/* 구분선: 시간 텍스트와 사진 영역 사이 */}
+      <div className="timeline-section-divider" />
+
+      {/* 오른쪽: 같은 시간대의 사진들 (드래그 가능, 범위 제한, 크기 조절 가능) */}
       <div className="timeline-photos-container">
         {block.photos.map((photo, index) => (
           <TimelineImage
@@ -51,6 +56,7 @@ export function TimelineSection({
             onDecorate={onDecorate}
             onRemove={onRemovePhoto}
             onPositionChange={onPhotoPositionChange}
+            onResizeEnd={onPhotoResizeEnd}
             index={index}
           />
         ))}

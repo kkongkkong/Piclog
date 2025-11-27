@@ -10,6 +10,7 @@ interface TimelineColumnProps {
   onRemovePhoto?: (photoId: string, url: string) => Promise<boolean>;
   onRemoveComplete?: () => void;
   onDecorate?: (photoId: string) => void;
+  onPhotoResizeEnd?: (photoId: string, width: number, timeBlockTime: string, x: number, y: number) => Promise<void>;
   selectedPhotos?: Set<string>;
   deleting?: boolean;
 }
@@ -27,6 +28,7 @@ export function TimelineColumn({
   onRemovePhoto,
   onRemoveComplete,
   onDecorate,
+  onPhotoResizeEnd,
   selectedPhotos = new Set(),
   deleting = false,
 }: TimelineColumnProps) {
@@ -61,6 +63,34 @@ export function TimelineColumn({
     [data]
   );
 
+  // 사진 크기 변경 핸들러: API에 저장
+  const handlePhotoResizeEnd = useCallback(
+    async (photoId: string, width: number, timeBlockTime: string, x: number, y: number) => {
+      try {
+        const response = await fetch('/api/photos/positions/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            photoId,
+            timeBlockTime,
+            x,
+            y,
+            width,
+          }),
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || '크기 저장 실패');
+        }
+      } catch (error) {
+        console.error('사진 크기 저장 오류:', error);
+        throw error;
+      }
+    },
+    []
+  );
+
   if (data.length === 0) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -85,6 +115,7 @@ export function TimelineColumn({
           onRemoveComplete={onRemoveComplete}
           onDecorate={onDecorate}
           onPhotoPositionChange={handlePhotoPositionChange}
+          onPhotoResizeEnd={onPhotoResizeEnd || handlePhotoResizeEnd}
           selectedPhotos={selectedPhotos}
           deleting={deleting}
         />

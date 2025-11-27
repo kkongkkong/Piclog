@@ -3,18 +3,19 @@ import { supabase, PHOTO_POSITIONS_TABLE } from '@/lib/supabase';
 
 /**
  * POST /api/photos/positions/save
- * 드래그로 조정된 사진의 위치를 저장합니다.
+ * 드래그로 조정된 사진의 위치와 크기를 저장합니다.
  *
  * Body: {
  *   photoId: string;
  *   timeBlockTime: string; // e.g., "09:00"
  *   x: number;
  *   y: number;
+ *   width?: number; // 선택적: 사진 너비 (px)
  * }
  */
 export async function POST(request: NextRequest) {
   try {
-    const { photoId, timeBlockTime, x, y } = await request.json();
+    const { photoId, timeBlockTime, x, y, width } = await request.json();
 
     if (!photoId || !timeBlockTime || x === undefined || y === undefined) {
       return NextResponse.json(
@@ -24,18 +25,22 @@ export async function POST(request: NextRequest) {
     }
 
     // UPSERT: 기존 위치가 있으면 업데이트, 없으면 생성
+    const updateData: any = {
+      photo_id: photoId,
+      time_block: timeBlockTime,
+      x: parseFloat(String(x)),
+      y: parseFloat(String(y)),
+      updated_at: new Date().toISOString(),
+    };
+
+    // width가 있으면 추가
+    if (width !== undefined && width !== null) {
+      updateData.width = parseInt(String(width));
+    }
+
     const { data, error } = await supabase
       .from(PHOTO_POSITIONS_TABLE)
-      .upsert(
-        {
-          photo_id: photoId,
-          time_block: timeBlockTime,
-          x: parseFloat(String(x)),
-          y: parseFloat(String(y)),
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: 'photo_id, time_block' }
-      )
+      .upsert(updateData, { onConflict: 'photo_id, time_block' })
       .select()
       .single();
 

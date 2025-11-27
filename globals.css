@@ -144,6 +144,35 @@ button {
   pointer-events: auto;
 }
 
+/* TimelineSection 구분선 (시간 텍스트와 사진 사이) */
+.timeline-section-divider {
+  background-color: #E5E5E5;
+  width: 2px;
+  opacity: 0.8;
+  border-radius: 2px;
+  min-height: 100%;
+  flex-shrink: 0;
+  margin: 0 8px;
+}
+
+/* TimelineImage 리사이즈 핸들 */
+.timeline-image-resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  cursor: col-resize;
+  z-index: 40;
+  transition: background-color 0.2s ease;
+}
+
+.timeline-image-resize-handle:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
 .photo-card {
   @apply bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow;
 }
