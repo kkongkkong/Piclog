@@ -20,3 +20,12 @@ export {
   AutoSyncIndicator,
   UploadModal,
 } from './common';
+
+// Decorate Components
+export {
+  DecorateCanvas,
+  NukkiButton,
+  ElementToolBar,
+  LayerPanel,
+  DecorateContainer,
+} from './decorate';

@@ -10,6 +10,7 @@ interface TimelineContainerProps {
   error?: string | null;
   onPhotoDelete?: () => void;
   onDeletePhoto?: (photoId: string, url: string) => Promise<boolean>;
+  onDecorate?: (photoId: string) => void;
 }
 
 /**
@@ -24,6 +25,7 @@ export function TimelineContainer({
   error = null,
   onPhotoDelete,
   onDeletePhoto,
+  onDecorate,
 }: TimelineContainerProps) {
   const [selectedPhotos, setSelectedPhotos] = useState<Set<string>>(new Set());
   const [deleting, setDeleting] = useState(false);
@@ -40,8 +42,8 @@ export function TimelineContainer({
     });
   };
 
-  const handleRemovePhoto = async (photoId: string, url: string) => {
-    if (!onDeletePhoto) return;
+  const handleRemovePhoto = async (photoId: string, url: string): Promise<boolean> => {
+    if (!onDeletePhoto) return false;
 
     setDeleting(true);
     try {
@@ -54,6 +56,7 @@ export function TimelineContainer({
         });
         onPhotoDelete?.();
       }
+      return success;
     } finally {
       setDeleting(false);
     }
@@ -82,6 +85,7 @@ export function TimelineContainer({
         onSelectPhoto={handleSelectPhoto}
         onRemovePhoto={handleRemovePhoto}
         onRemoveComplete={onPhotoDelete}
+        onDecorate={onDecorate}
         selectedPhotos={selectedPhotos}
         deleting={deleting}
       />

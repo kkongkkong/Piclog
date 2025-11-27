@@ -13,3 +13,4 @@ export const STICKERS_BUCKET = 'stickers';
 export const PHOTOS_TABLE = 'photos';
 export const DECORATIONS_TABLE = 'decorations';
 export const PHOTO_POSITIONS_TABLE = 'photo_positions';
+export const TEXT_ITEMS_TABLE = 'text_items';

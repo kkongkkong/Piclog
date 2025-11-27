@@ -53,6 +53,7 @@ button {
   align-items: flex-start;
   width: 100%;
   gap: 0;
+  position: relative;
 }
 
 @media (max-width: 768px) {
@@ -113,14 +114,24 @@ button {
   width: 100%;
 }
 
+/* 오른쪽: 컨테이너 (사진과 텍스트 버튼을 담는 래퍼) */
+.timeline-section-right {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  gap: 8px;
+}
+
 /* 오른쪽: 사진들 컨테이너 (같은 시간대, 각 섹션의 오른쪽 영역) */
 .timeline-photos-container {
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px;
   align-items: flex-start;
-  flex: 1;
+  justify-content: flex-start;
   padding-left: 16px;
+  position: relative;
 }
 
 /* TimelineImage: position: relative + display: block + margin-top */
@@ -170,6 +181,68 @@ button {
 }
 
 .timeline-image-resize-handle:hover {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* TimelineText 스타일 */
+.timeline-text {
+  position: absolute;
+  display: block;
+  user-select: none;
+}
+
+.timeline-text-draggable {
+  cursor: grab;
+}
+
+.timeline-text-dragging {
+  cursor: grabbing;
+  opacity: 0.9;
+  pointer-events: auto;
+}
+
+.timeline-text-display {
+  padding: 4px 8px;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  cursor: grab;
+}
+
+.timeline-text-display:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.timeline-text-input {
+  font-family: inherit;
+  padding: 8px;
+  border: 2px solid #4f46e5;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #333;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+.timeline-text-input:focus {
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+}
+
+.timeline-text-resize-handle {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 10px;
+  height: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 2px;
+  cursor: col-resize;
+  z-index: 40;
+  transition: background-color 0.2s ease;
+}
+
+.timeline-text-resize-handle:hover {
   background-color: rgba(0, 0, 0, 0.5);
 }
 

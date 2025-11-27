@@ -68,26 +68,108 @@ export default function DecoratePage() {
   }, [photoId]);
 
   const handleSaveDecorations = async (decorations: DecorationElement[]) => {
-    // Supabase에 저장하는 로직은 별도의 Hook이나 API를 통해 처리
     try {
-      const response = await fetch('/api/decorations/save', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          photoId: photo?.id,
-          decorations,
-        }),
-      });
+      // 누끼 decoration과 텍스트 찾기
+      const nukkiDecoration = decorations.find((d) => d.type === 'nukki');
+      const textDecorations = decorations.filter((d) => d.type === 'text');
 
-      if (!response.ok) {
-        throw new Error('저장 실패');
+      // 누끼가 있으면 사진 URL을 업데이트
+      if (nukkiDecoration && nukkiDecoration.imageUrl && photo) {
+        console.log('누끼 저장 시작:', nukkiDecoration.imageUrl.substring(0, 50));
+
+        // 누끼와 텍스트를 함께 저장
+        const decorationsToSave = [nukkiDecoration, ...textDecorations];
+        const response = await fetch('/api/decorations/save', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            photoId: photo?.id,
+            decorations: decorationsToSave,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(`Decoration 저장 실패: ${errorData.error}`);
+        }
+
+        const result = await response.json();
+        console.log('Decoration 저장 결과:', result);
+
+        const savedDecorations = result.data?.decorations || [];
+        const savedNukkiDecoration = savedDecorations.find(
+          (d: DecorationElement) => d.type === 'nukki'
+        );
+
+        console.log('저장된 누끼 데이터:', savedNukkiDecoration);
+
+        // 사진의 URL을 누끼 이미지로 업데이트
+        if (savedNukkiDecoration && savedNukkiDecoration.imageUrl) {
+          console.log('사진 URL 업데이트 시작:', savedNukkiDecoration.imageUrl.substring(0, 50));
+
+          const updateResponse = await fetch('/api/photos/update-url', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              photoId: photo.id,
+              imageUrl: savedNukkiDecoration.imageUrl,
+            }),
+          });
+
+          if (!updateResponse.ok) {
+            const errorData = await updateResponse.json();
+            console.error('사진 업데이트 실패:', errorData);
+            throw new Error(`사진 업데이트 실패: ${errorData.error}`);
+          }
+
+          console.log('사진 URL 업데이트 완료');
+
+          // 누끼 완료 후 누끼 decoration 데이터만 삭제 (텍스트는 유지)
+          if (textDecorations.length === 0) {
+            const deleteResponse = await fetch('/api/decorations/delete', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                photoId: photo.id,
+              }),
+            });
+            console.log('Decoration 삭제:', deleteResponse.ok);
+          }
+        } else {
+          throw new Error('저장된 누끼 데이터가 없습니다');
+        }
+      } else {
+        // 누끼가 없으면 모든 decoration들을 저장 (텍스트만 있는 경우)
+        if (decorations.length > 0) {
+          const response = await fetch('/api/decorations/save', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              photoId: photo?.id,
+              decorations,
+            }),
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(`저장 실패: ${errorData.error}`);
+          }
+        }
       }
 
       // 저장 완료 후 타임라인으로 돌아가기
+      console.log('저장 완료, 타임라인으로 이동');
       router.push('/');
     } catch (error) {
+      console.error('저장 중 오류:', error);
       throw error;
     }
   };

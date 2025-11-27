@@ -69,3 +69,22 @@ export type PhotoPosition = {
   x: number; // 절대 위치 (px, TimelineSection 기준)
   y: number; // 절대 위치 (px, TimelineSection 기준)
 };
+
+// === Text Item Type (타임라인 텍스트) ===
+export type TextItem = {
+  id: string;
+  timeBlockTime: string; // e.g., "09:00" (해당 시간대)
+  content: string; // 텍스트 내용
+  x: number; // 절대 위치 (px, TimelineSection 기준)
+  y: number; // 절대 위치 (px, TimelineSection 기준)
+  fontSize: number; // 폰트 크기 (px, 10~60)
+  color?: string; // 텍스트 색상 (기본값: #333)
+  fontWeight?: 'normal' | 'bold'; // 폰트 굵기
+  createdAt: string; // ISO string
+  updatedAt: string; // ISO string
+};
+
+// === Timeline with Text ===
+export type TimelineBlockWithText = TimelineBlock & {
+  texts: TextItem[];
+};
